@@ -1,0 +1,112 @@
+body{
+    font-family: 'Fira Sans', sans-serif;
+    margin: 0;
+    color: white;
+    text-shadow: 0px 1px 8px black;
+}
+.weather-container{
+background-image: url('../images/weather-bg.jpg');
+background-repeat: no-repeat;
+background-position: center;
+background-size: cover;
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+font-weight: 400;
+padding: 10px;
+}
+.weather-content-wrap{
+    max-width: 780px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    flex: 1;
+    border-radius: 10px;
+
+}
+.weather-icon{
+    font-size: 200px;
+    text-align: center;
+    padding: 20px,0,0,0;
+    line-height: 280px;
+}
+.description-wrap{
+    display: flex;
+    justify-content: center;
+}
+.description-wrap-1{
+    margin-right: 10px;
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.city{
+    font-weight: 300;
+    font-size: 35px;
+}
+.description-of-weather{
+    font-size: 50px;
+    text-align: center;
+    line-height: 1.7;
+}
+.description-wrap-2{
+    font-size: 155px;
+}
+.temperature{
+    display: flex;
+}
+.temp-unit{
+    cursor: pointer;
+    color: red;
+    transition: all 0.3s ease-in-out;
+}
+.temp-unit:hover{
+    transform: scale(1.2);
+}
+.spinner-grow{
+    width: 40px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: blue;
+    color: blue;
+    animation: spin 2s linear infinite;
+
+}
+
+@keyframes spin{
+    0%{ transform: rotate(0deg);}
+    100%{ transform: rotate(360deg);}
+}
+
+
+
+
+
+
+@media screen and (max-width:753px) {
+    .description-wrap, .description-wrap-1, .description-wrap-1 .city{
+      display: block;
+    } 
+    .description-wrap-1{
+        margin-top: 20px;
+    }
+
+    .description-wrap-1 .city, .description-wrap-2 .temperature{
+        text-align: center;
+    }
+    .description-wrap-1 .description-of-weather{
+        line-height: 1.1;
+    }
+    .description-wrap-2{
+        font-size: 96px;
+    }
+    .description-wrap-2 .temperature{
+        justify-content: center;
+    }
+    .weather-content-wrap .weather-icon{
+        font-size: 130px;
+        height: 160px;
+        line-height: 160px;
+    }
+}

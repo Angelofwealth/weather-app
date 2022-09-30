@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <!-- font awesome code for the location -->
+    <script
+      src="https://kit.fontawesome.com/9daf415874.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- weather icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"
+      integrity="sha512-r/Gan7PMSRovDus++vDS2Ayutc/cSdl268u047n4z+k7GYuR7Hiw71FsT3QQxdKJBVHYttOJ6IGLnlM9IoMToQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- css -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <title>weather app</title>
+  </head>
+  <body>
+    <section class="weather-container">
+      <div class="weather-content-wrap">
+        <div class="weather-icon">
+          <i class="wi"></i>
+        </div>
+        <div class="description-wrap">
+          <div class="description-wrap-1">
+            <div class="city">
+              <i class="fas fa-location-dot"></i>
+              <span class="city-name"></span>
+              <span class="country"></span>
+            </div>
+            <div class="description-of-weather"></div>
+          </div>
+          <div class="description-wrap-2">
+            <div class="temperature">
+              <span class="temp-data"></span>
+              &deg;
+              <span class="temp-unit">C</span>
+            </div>
+          </div>
+        </div>
+        <div class="spinner-grow" role="status">
+          <span class="visually-hidden"></span>
+        </div>
+      </div>
+    </section>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="./assets/js/index.js"></script>
+  </body>
+</html>
