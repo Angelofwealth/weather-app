@@ -41,9 +41,13 @@ function getTemperatureByLocation(latitude, longitude) {
   })
     .then((value) => {
       console.log(value);
-      displayTemperature(value.data);
+      if (value) {
+        mySpinner();
+        displayTemperature(value.data);
+      }
     })
-    .catch((error) => console.error(error));
+
+    .catch((error) => console.log(error));
 }
 function getUserIPAddress() {
   axios({
@@ -61,19 +65,20 @@ function getUserIPAddress() {
       getTemperatureByLocation(latAndLong[0], latAndLong[1]);
     })
 
-    .catch((error) => console.error(error));
+    .catch((error) => console.log(error));
 }
 
 function displayTemperature(tempDetails) {
-  const weatherImg = document.querySelector(".weather-icon i");
+  const weatherIcon = document.querySelector(".weather-icon i");
   const city = document.querySelector(".city-name");
   const country = document.querySelector(".country");
   const desc = document.querySelector(".description-of-weather");
   const temperature = document.querySelector(".temp-data");
 
   const tempDescription = tempDetails.weather[0].description;
-  const weatherIcon = tempDetails.weather[0].icon;
-  const isDay = weatherIcon.includes("d"); //conatains a bbolean true if the letter d is containe
+  const weatherImage = tempDetails.weather[0].icon;
+  // console.log(weatherImage)
+  const isDay = weatherImage.includes("d"); //conatains a bbolean true if the letter d is containe
 
   city.textContent = `${tempDetails.name},`;
   country.textContent = tempDetails.sys.country;
@@ -116,7 +121,7 @@ function displayTemperature(tempDetails) {
       break;
 
     case "shower rain":
-      weatherimage.classList.add("wi-showers");
+      weatherIcon.classList.add("wi-showers");
       break;
 
     case "thunderstorm":
@@ -167,4 +172,3 @@ function mySpinner() {
   document.querySelector(".spinner-grow").style.display = "none";
   document.querySelector(".weather-content-wrap").style.display = "block";
 }
-mySpinner();
