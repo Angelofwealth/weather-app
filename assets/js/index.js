@@ -82,7 +82,8 @@ function displayTemperature(tempDetails) {
 
   city.textContent = `${tempDetails.name},`;
   country.textContent = tempDetails.sys.country;
-  // desc.textContent = tempDescription;
+  desc.textContent = tempDescription;
+  desc.style.textTransform = "capitalize";
   temperature.textContent = Math.round(tempDetails.main.temp);
 
   switch (tempDescription) {
