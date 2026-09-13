@@ -26,59 +26,62 @@ body {
   transition: background 1.4s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── Weather backgrounds ────────────────── */
+/* ── Weather backgrounds ────────────────────────────────
+   Each uses stacked CSS backgrounds: radial glow(s) on
+   top of a linear base so it reads as atmospheric, not flat.
+──────────────────────────────────────────────────────── */
 body {
-  background: linear-gradient(160deg, #1c2d3f 0%, #2d4560 100%);
+  background:
+    radial-gradient(ellipse 60% 40% at 60% 10%, rgba(60,100,170,.28) 0%, transparent 65%),
+    linear-gradient(175deg, #0f1c2e 0%, #1e3450 100%);
 }
 body.clear-day {
-  background: linear-gradient(160deg,
-    #c94b12 0%,
-    #f5920e 22%,
-    #ffd44d 40%,
-    #5bbfe8 65%,
-    #1460c8 100%);
+  background:
+    radial-gradient(ellipse 55% 50% at 72% 14%, rgba(255,215,60,.52) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 55% at 18% 88%, rgba(255,100,30,.38) 0%, transparent 58%),
+    linear-gradient(175deg, #0d2a5e 0%, #1a5599 32%, #c86a10 68%, #6b2e08 100%);
 }
 body.clear-night {
-  background: linear-gradient(160deg,
-    #020813 0%,
-    #07153a 45%,
-    #0d2660 100%);
+  background:
+    radial-gradient(ellipse 38% 28% at 32% 18%, rgba(110,130,255,.32) 0%, transparent 62%),
+    radial-gradient(ellipse 22% 18% at 74% 28%, rgba(180,160,255,.18) 0%, transparent 52%),
+    radial-gradient(ellipse 15% 12% at 55% 60%, rgba(120,100,220,.12) 0%, transparent 45%),
+    linear-gradient(175deg, #010408 0%, #060e26 45%, #0b1a42 100%);
 }
 body.rain {
-  background: linear-gradient(160deg,
-    #111e2b 0%,
-    #1e3448 55%,
-    #0f1e2e 100%);
+  background:
+    radial-gradient(ellipse 70% 38% at 50% 8%, rgba(50,100,200,.32) 0%, transparent 62%),
+    radial-gradient(ellipse 40% 30% at 20% 70%, rgba(30,70,140,.2) 0%, transparent 55%),
+    linear-gradient(175deg, #080f18 0%, #152535 55%, #080f18 100%);
 }
 body.drizzle {
-  background: linear-gradient(160deg,
-    #182530 0%,
-    #28404e 55%,
-    #141e2a 100%);
+  background:
+    radial-gradient(ellipse 65% 40% at 50% 12%, rgba(60,110,180,.28) 0%, transparent 60%),
+    linear-gradient(175deg, #0e1822 0%, #1e3040 55%, #0a1218 100%);
 }
 body.thunderstorm {
-  background: linear-gradient(160deg,
-    #06041a 0%,
-    #1c1650 55%,
-    #0a0825 100%);
+  background:
+    radial-gradient(ellipse 55% 45% at 42% 22%, rgba(110,55,230,.48) 0%, transparent 62%),
+    radial-gradient(ellipse 30% 25% at 78% 58%, rgba(70,25,190,.28) 0%, transparent 55%),
+    linear-gradient(175deg, #020108 0%, #0c0828 50%, #040015 100%);
 }
 body.snow {
-  background: linear-gradient(160deg,
-    #3c5e8a 0%,
-    #5e87b8 50%,
-    #2a4a72 100%);
+  background:
+    radial-gradient(ellipse 65% 45% at 50% 12%, rgba(200,225,255,.42) 0%, transparent 62%),
+    radial-gradient(ellipse 35% 30% at 80% 75%, rgba(150,190,240,.22) 0%, transparent 55%),
+    linear-gradient(175deg, #1a2e4a 0%, #2e5278 50%, #162440 100%);
 }
 body.fog {
-  background: linear-gradient(160deg,
-    #3a4555 0%,
-    #566070 50%,
-    #2e3a48 100%);
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 28%, rgba(150,175,195,.28) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 35% at 15% 60%, rgba(120,150,170,.15) 0%, transparent 55%),
+    linear-gradient(175deg, #1c2530 0%, #32485a 50%, #161e28 100%);
 }
 body.cloudy {
-  background: linear-gradient(160deg,
-    #1c2d3f 0%,
-    #2e4560 50%,
-    #162030 100%);
+  background:
+    radial-gradient(ellipse 65% 42% at 60% 10%, rgba(55,95,165,.32) 0%, transparent 62%),
+    radial-gradient(ellipse 40% 35% at 10% 75%, rgba(30,60,110,.22) 0%, transparent 55%),
+    linear-gradient(175deg, #0d1825 0%, #1e3248 50%, #091220 100%);
 }
 
 /* ── Glass utility ──────────────────────── */
