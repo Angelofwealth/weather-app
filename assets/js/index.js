@@ -134,7 +134,12 @@ function displayWeather() {
   $('cityName')    .textContent = w.name;
   $('countryName') .textContent = w.sys.country;
   $('localDate')   .textContent = localDate(w.dt, w.timezone);
-  $('tempBig')     .textContent = temp;
+
+  /* Temperature — coloured gradient based on raw °C value */
+  const tempEl = $('tempBig');
+  tempEl.textContent = temp;
+  tempEl.className = 'temp-big ' + tempClass(w.main.temp);
+
   $('tempUnit')    .textContent = unit;
   $('feelsLike')   .textContent = `Feels like ${feels}${unit}`;
   $('weatherDesc') .textContent = w.weather[0].description;
@@ -272,6 +277,15 @@ function showError(msg) {
    HELPERS
 ═══════════════════════════════════════════ */
 const $ = id => document.getElementById(id);
+
+/** Temperature → CSS class for gradient colour */
+function tempClass(celsius) {
+  if (celsius > 35) return 'temp-hot';
+  if (celsius > 20) return 'temp-warm';
+  if (celsius > 10) return 'temp-mild';
+  if (celsius > 0)  return 'temp-cold';
+  return 'temp-freezing';
+}
 
 /** UTC date key for grouping forecast days */
 function utcKey(d) {

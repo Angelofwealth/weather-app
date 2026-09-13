@@ -441,3 +441,86 @@ body.cloudy {
   .details-strip { gap: 0; }
   .detail-val { font-size: 0.82rem; }
 }
+
+/* ════════════════════════════════════════════
+   COLOUR ENHANCEMENTS
+   Condition icons, temperature gradients,
+   detail accent colours, forecast highlights.
+════════════════════════════════════════════ */
+
+/* ── Main weather icon — condition-tinted with glow ── */
+body.clear-day    #mainIcon { color: #FFD060; text-shadow: 0 0 28px rgba(255,208,60,.7); }
+body.clear-night  #mainIcon { color: #93C5FD; text-shadow: 0 0 22px rgba(147,197,253,.55); }
+body.rain         #mainIcon { color: #60A5FA; text-shadow: 0 0 20px rgba(96,165,250,.55); }
+body.drizzle      #mainIcon { color: #93C5FD; text-shadow: 0 0 16px rgba(147,197,253,.4); }
+body.thunderstorm #mainIcon { color: #C084FC; text-shadow: 0 0 28px rgba(192,132,252,.7); }
+body.snow         #mainIcon { color: #E0F2FE; text-shadow: 0 0 22px rgba(224,242,254,.6); }
+body.fog          #mainIcon { color: #CBD5E1; text-shadow: 0 0 14px rgba(203,213,225,.35); }
+body.cloudy       #mainIcon { color: #94A3B8; }
+
+/* ── Temperature gradient — class set by JS based on °C ── */
+.temp-big.temp-hot {
+  background: linear-gradient(160deg, #FF6B35 0%, #FF3D00 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.temp-big.temp-warm {
+  background: linear-gradient(160deg, #FB923C 0%, #EAB308 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.temp-big.temp-mild {
+  background: linear-gradient(160deg, #34D399 0%, #10B981 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.temp-big.temp-cold {
+  background: linear-gradient(160deg, #38BDF8 0%, #3B82F6 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.temp-big.temp-freezing {
+  background: linear-gradient(160deg, #60A5FA 0%, #818CF8 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* ── Detail strip — each item gets its own accent ── */
+/* 1=humidity  3=wind  5=sunrise  7=sunset (separators are 2,4,6) */
+.details-strip .detail-item:nth-child(1) .detail-icon { color: #60A5FA; }
+.details-strip .detail-item:nth-child(1) .detail-val  { color: #93C5FD; }
+
+.details-strip .detail-item:nth-child(3) .detail-icon { color: #2DD4BF; }
+.details-strip .detail-item:nth-child(3) .detail-val  { color: #5EEAD4; }
+
+.details-strip .detail-item:nth-child(5) .detail-icon { color: #FB923C; }
+.details-strip .detail-item:nth-child(5) .detail-val  { color: #FCA570; }
+
+.details-strip .detail-item:nth-child(7) .detail-icon { color: #F472B6; }
+.details-strip .detail-item:nth-child(7) .detail-val  { color: #F9A8D4; }
+
+/* ── Forecast card — label accent + warm high temps ── */
+.forecast-label {
+  background: linear-gradient(90deg, #60A5FA, #C084FC);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  opacity: 1;
+}
+.fday-high { color: #FB923C; }
+
+/* ── Forecast icons — condition-tinted via body class ── */
+body.clear-day    .fday-icon .wi { color: #FFD060; }
+body.clear-night  .fday-icon .wi { color: #93C5FD; }
+body.rain         .fday-icon .wi { color: #60A5FA; }
+body.drizzle      .fday-icon .wi { color: #93C5FD; }
+body.thunderstorm .fday-icon .wi { color: #C084FC; }
+body.snow         .fday-icon .wi { color: #E0F2FE; }
+body.fog          .fday-icon .wi { color: #CBD5E1; }
+body.cloudy       .fday-icon .wi { color: #94A3B8; }
+
+/* ── Unit toggle — accent border on active ── */
+.unit-toggle {
+  border-color: rgba(255,255,255,0.22);
+  background: linear-gradient(135deg, rgba(96,165,250,.15) 0%, rgba(192,132,252,.12) 100%);
+}
+.unit-toggle:hover {
+  background: linear-gradient(135deg, rgba(96,165,250,.25) 0%, rgba(192,132,252,.2) 100%);
+  border-color: rgba(255,255,255,0.38);
+}
+
+/* ── Search submit glow on focus-within ── */
+.search-wrap:focus-within .search-submit { color: #93C5FD; }
