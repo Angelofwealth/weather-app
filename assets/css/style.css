@@ -1,6 +1,9 @@
 /* ── Reset ─────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Critical: prevent CSS display rules from overriding the hidden attribute */
+[hidden] { display: none !important; }
+
 /* ── Tokens ────────────────────────────── */
 :root {
   --glass-bg:     rgba(255,255,255,0.08);
@@ -25,40 +28,57 @@ body {
 
 /* ── Weather backgrounds ────────────────── */
 body {
-  background: linear-gradient(160deg, #2c3e50 0%, #3d5266 100%);
+  background: linear-gradient(160deg, #1c2d3f 0%, #2d4560 100%);
 }
 body.clear-day {
   background: linear-gradient(160deg,
-    #e8612f 0%, #f5a120 28%,
-    #68b8e8 60%, #2870d4 100%);
+    #c94b12 0%,
+    #f5920e 22%,
+    #ffd44d 40%,
+    #5bbfe8 65%,
+    #1460c8 100%);
 }
 body.clear-night {
   background: linear-gradient(160deg,
-    #07101f 0%, #0d2040 50%, #152e58 100%);
+    #020813 0%,
+    #07153a 45%,
+    #0d2660 100%);
 }
 body.rain {
   background: linear-gradient(160deg,
-    #1a2838 0%, #2c4358 50%, #17293a 100%);
+    #111e2b 0%,
+    #1e3448 55%,
+    #0f1e2e 100%);
 }
 body.drizzle {
   background: linear-gradient(160deg,
-    #243040 0%, #344d64 50%, #1e2e3e 100%);
+    #182530 0%,
+    #28404e 55%,
+    #141e2a 100%);
 }
 body.thunderstorm {
   background: linear-gradient(160deg,
-    #0e0b28 0%, #2a255c 55%, #1a1838 100%);
+    #06041a 0%,
+    #1c1650 55%,
+    #0a0825 100%);
 }
 body.snow {
   background: linear-gradient(160deg,
-    #6e91be 0%, #4e74a0 50%, #365882 100%);
+    #3c5e8a 0%,
+    #5e87b8 50%,
+    #2a4a72 100%);
 }
 body.fog {
   background: linear-gradient(160deg,
-    #5c6a7a 0%, #7a8c9e 50%, #4a5a6a 100%);
+    #3a4555 0%,
+    #566070 50%,
+    #2e3a48 100%);
 }
 body.cloudy {
   background: linear-gradient(160deg,
-    #2c3e50 0%, #405165 50%, #243447 100%);
+    #1c2d3f 0%,
+    #2e4560 50%,
+    #162030 100%);
 }
 
 /* ── Glass utility ──────────────────────── */
