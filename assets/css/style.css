@@ -93,8 +93,20 @@ body.cloudy {
   border-radius: var(--radius-lg);
 }
 
+/* ── Weather canvas (sits behind everything) ── */
+#weatherCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ── App shell ──────────────────────────── */
 .app {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   max-width: 520px;
   margin: 0 auto;
