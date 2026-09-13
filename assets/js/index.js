@@ -1,175 +1,298 @@
+'use strict';
+
+/* ═══════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════ */
+const API_KEY = '96d0d50c9d416b7b9f249d42b9bae6e5';
+const OWM     = 'https://api.openweathermap.org/data/2.5';
+
+/* ═══════════════════════════════════════════
+   STATE
+   - All raw weather data stored in metric.
+   - Unit preference only affects display layer.
+═══════════════════════════════════════════ */
+let isCelsius   = true;
+let rawWeather  = null;   // OWM /weather response (metric)
+let rawForecast = null;   // OWM /forecast response (metric)
+
+/* ═══════════════════════════════════════════
+   OWM ICON CODE → WEATHER-ICONS CLASS
+═══════════════════════════════════════════ */
+const ICON_MAP = {
+  '01d': 'wi-day-sunny',         '01n': 'wi-night-clear',
+  '02d': 'wi-day-cloudy',        '02n': 'wi-night-alt-cloudy',
+  '03d': 'wi-cloud',             '03n': 'wi-cloud',
+  '04d': 'wi-cloudy',            '04n': 'wi-cloudy',
+  '09d': 'wi-showers',           '09n': 'wi-showers',
+  '10d': 'wi-day-rain',          '10n': 'wi-night-alt-rain',
+  '11d': 'wi-day-thunderstorm',  '11n': 'wi-night-alt-thunderstorm',
+  '13d': 'wi-day-snow',          '13n': 'wi-night-alt-snow',
+  '50d': 'wi-fog',               '50n': 'wi-night-fog',
+};
+
+/* ═══════════════════════════════════════════
+   WEATHER CONDITION → BACKGROUND CLASS
+═══════════════════════════════════════════ */
+const BG_CLASSES = ['clear-day','clear-night','rain','drizzle','thunderstorm','snow','fog','cloudy'];
+
+function bgClass(conditionId, icon) {
+  const isDay = icon ? icon.endsWith('d') : true;
+  if (conditionId >= 200 && conditionId < 300) return 'thunderstorm';
+  if (conditionId >= 300 && conditionId < 400) return 'drizzle';
+  if (conditionId >= 500 && conditionId < 600) return 'rain';
+  if (conditionId >= 600 && conditionId < 700) return 'snow';
+  if (conditionId >= 700 && conditionId < 800) return 'fog';
+  if (conditionId === 800)                      return isDay ? 'clear-day' : 'clear-night';
+  return 'cloudy';
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  setupSearch();
+  setupUnitToggle();
+  document.getElementById('retryBtn').addEventListener('click', getUserLocation);
+  getUserLocation();
+});
+
+/* ═══════════════════════════════════════════
+   GEOLOCATION
+═══════════════════════════════════════════ */
 function getUserLocation() {
-  if (navigator.geolocation) {
-    // suucessful function ie if the user allows loactaion
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log(position.coords);
+  showLoading('Getting your location…');
 
-        const myCoords = position.coords;
-
-        getTemperatureByLocation(myCoords.latitude, myCoords.longitude);
-      },
-      // error callback if the user denies location, you will then have to make use of the ip address to  get weather condition
-
-      (error) => {
-        console.log(error);
-        getUserIPAddress();
-      }
-    );
-
-    // if naviagtor.geolocation.getcurrentposition is not supported by the browser Use the user ip address
-  } else {
-    console.error("Geolocation is not supportted by this browser.");
-    getUserIPAddress();
+  if (!navigator.geolocation) {
+    fetchByIP();
+    return;
   }
-}
-getUserLocation();
 
-function getTemperatureByLocation(latitude, longitude) {
-  const appId = "96d0d50c9d416b7b9f249d42b9bae6e5";
-  const url = "https://api.openweathermap.org/data/2.5/weather";
-
-  axios({
-    method: "get",
-    url,
-    params: {
-      lat: latitude,
-      lon: longitude,
-      appid: appId,
-      units: "metric", //  get value in deg celcius
-    },
-  })
-    .then((value) => {
-      console.log(value);
-      if (value) {
-        mySpinner();
-        displayTemperature(value.data);
-      }
-    })
-
-    .catch((error) => console.log(error));
-}
-function getUserIPAddress() {
-  axios({
-    url: "https://ipinfo.io",
-    method: "get",
-    params: {
-      token: "8ff70be1bd282d",
-    },
-  })
-    .then((value) => {
-      console.log(value);
-      const location = value.data.loc;
-
-      const latAndLong = location.split(",");
-      getTemperatureByLocation(latAndLong[0], latAndLong[1]);
-    })
-
-    .catch((error) => console.log(error));
+  navigator.geolocation.getCurrentPosition(
+    pos  => fetchWeather({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+    ()   => fetchByIP(),
+    { timeout: 8000 }
+  );
 }
 
-function displayTemperature(tempDetails) {
-  const weatherIcon = document.querySelector(".weather-icon i");
-  const city = document.querySelector(".city-name");
-  const country = document.querySelector(".country");
-  const desc = document.querySelector(".description-of-weather");
-  const temperature = document.querySelector(".temp-data");
-
-  const tempDescription = tempDetails.weather[0].description;
-  const weatherImage = tempDetails.weather[0].icon;
-  // console.log(weatherImage)
-  const isDay = weatherImage.includes("d"); //conatains a bbolean true if the letter d is containe
-
-  city.textContent = `${tempDetails.name},`;
-  country.textContent = tempDetails.sys.country;
-  desc.textContent = tempDescription;
-  desc.style.textTransform = "capitalize";
-  temperature.textContent = Math.round(tempDetails.main.temp);
-
-  switch (tempDescription) {
-    case "clear sky":
-      if (isDay) {
-        weatherIcon.classList.add("wi-day-sunny");
-      } else {
-        weatherIcon.classList.add("wi-night-clear");
-      }
-
-      break;
-    case "few clouds":
-      if (isDay) {
-        weatherIcon.classList.add("wi-day-cloudy");
-      } else {
-        weatherIcon.classList.add("wi-night-alt-cloudy");
-      }
-      break;
-    case "scattered clouds":
-      weatherIcon.classList.add("wi-cloud");
-      break;
-    case "broken clouds":
-    case "overcast clouds":
-      weatherIcon.classList.add("wi-cloudy");
-      break;
-
-    case "light rain":
-    case "very heavy rain":
-    case "extreme rain":
-    case "moderate rain":
-      if (isDay) {
-        weatherIcon.classList.add("wi-day-showers");
-      } else {
-        weatherIcon.classList.add("wi-night-alt-showers");
-      }
-      break;
-
-    case "shower rain":
-      weatherIcon.classList.add("wi-showers");
-      break;
-
-    case "thunderstorm":
-    case "heavy thunderstorm":
-      if (isDay) {
-        weatherIcon.classList.add("wi-day-lightning");
-      } else {
-        weatherIcon.classList.add("wi-night-alt-lightning");
-      }
-      break;
-
-    case "thunderstorm with light rain":
-    case "thunderstorm with rain":
-    case "thunderstorm with heavy rain":
-      weatherIcon.classList.add("wi-storm-showers");
-      break;
-
-    default:
-      break;
+async function fetchByIP() {
+  showLoading('Detecting location…');
+  try {
+    const res = await fetch('https://ipinfo.io?token=8ff70be1bd282d');
+    if (!res.ok) throw new Error();
+    const { loc } = await res.json();
+    const [lat, lon] = loc.split(',');
+    await fetchWeather({ lat, lon });
+  } catch {
+    showError('Could not detect your location.\nSearch for a city above.');
   }
 }
 
-function convertCelsiusToFarenheit() {
-  let initialDegreeCelcius = "";
+/* ═══════════════════════════════════════════
+   FETCH
+═══════════════════════════════════════════ */
+async function fetchWeather(params) {
+  showLoading('Fetching weather…');
+  try {
+    const qs = new URLSearchParams({ ...params, appid: API_KEY, units: 'metric' });
 
-  document
-    .querySelector(".description-wrap-2 .temp-unit")
-    .addEventListener("click", (event) => {
-      const tempData = document.querySelector(".temp-data");
-      const degCelsius = parseInt(tempData.textContent);
+    const [wRes, fRes] = await Promise.all([
+      fetch(`${OWM}/weather?${qs}`),
+      fetch(`${OWM}/forecast?${qs}`),
+    ]);
 
-      event.target.classList.toggle("temp-convert");
+    if (!wRes.ok) {
+      const msg = wRes.status === 404
+        ? 'City not found. Check the spelling and try again.'
+        : 'Weather service is unavailable. Try again shortly.';
+      throw new Error(msg);
+    }
 
-      if (event.target.classList.contains("temp-convert")) {
-        event.target.textContent = "F";
-        const fahrenheitresult = Math.round((degCelsius * 9) / 5 + 32);
-        initialDegreeCelcius = tempData.textContent;
-        tempData.textContent = fahrenheitresult;
-      } else {
-        event.target.textContent = "C";
-        tempData.textContent = initialDegreeCelcius;
-      }
-    });
+    rawWeather  = await wRes.json();
+    rawForecast = await fRes.json();
+
+    displayWeather();
+    showMain();
+
+  } catch (err) {
+    showError(err.message || 'Something went wrong. Please try again.');
+  }
 }
-convertCelsiusToFarenheit();
 
-function mySpinner() {
-  document.querySelector(".spinner-grow").style.display = "none";
-  document.querySelector(".weather-content-wrap").style.display = "block";
+/* ═══════════════════════════════════════════
+   DISPLAY
+═══════════════════════════════════════════ */
+function displayWeather() {
+  const w       = rawWeather;
+  const temp    = cvt(w.main.temp);
+  const feels   = cvt(w.main.feels_like);
+  const unit    = isCelsius ? '°C' : '°F';
+  const wind    = isCelsius
+    ? `${Math.round(w.wind.speed * 3.6)} km/h`
+    : `${Math.round(w.wind.speed * 2.237)} mph`;
+
+  /* ── Current ── */
+  $('cityName')    .textContent = w.name;
+  $('countryName') .textContent = w.sys.country;
+  $('localDate')   .textContent = localDate(w.dt, w.timezone);
+  $('tempBig')     .textContent = temp;
+  $('tempUnit')    .textContent = unit;
+  $('feelsLike')   .textContent = `Feels like ${feels}${unit}`;
+  $('weatherDesc') .textContent = w.weather[0].description;
+
+  /* ── Icon ── */
+  const iconEl = $('mainIcon');
+  const iconCode = w.weather[0].icon;
+  iconEl.className = `wi ${ICON_MAP[iconCode] || 'wi-na'}`;
+
+  /* ── Background ── */
+  document.body.classList.remove(...BG_CLASSES);
+  document.body.classList.add(bgClass(w.weather[0].id, iconCode));
+
+  /* ── Details ── */
+  $('humidity')  .textContent = `${w.main.humidity}%`;
+  $('windSpeed') .textContent = wind;
+  $('sunrise')   .textContent = localTime(w.sys.sunrise, w.timezone);
+  $('sunset')    .textContent = localTime(w.sys.sunset,  w.timezone);
+
+  /* ── Forecast ── */
+  renderForecast(rawForecast.list);
+}
+
+/* ═══════════════════════════════════════════
+   FORECAST
+═══════════════════════════════════════════ */
+function renderForecast(list) {
+  const days = processForecast(list);
+  const sym  = '°';
+
+  $('forecastGrid').innerHTML = days.map(d => `
+    <div class="forecast-day">
+      <span class="fday-name">${d.day}</span>
+      <span class="fday-icon"><i class="wi ${ICON_MAP[d.icon] || 'wi-na'}" aria-hidden="true"></i></span>
+      <div class="fday-temps">
+        <span class="fday-high">${cvt(d.max)}${sym}</span>
+        <span class="fday-low">${cvt(d.min)}${sym}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+/**
+ * Groups the 3-hourly forecast list by day, skipping today.
+ * Returns up to 5 days with min/max temps and representative icon.
+ */
+function processForecast(list) {
+  const days    = new Map();
+  const todayKey = utcKey(new Date());
+
+  list.forEach(item => {
+    const d   = new Date(item.dt * 1000);
+    const key = utcKey(d);
+    if (key === todayKey) return;
+
+    if (!days.has(key)) {
+      days.set(key, {
+        day:   d.toLocaleDateString('en-US', { weekday: 'short' }),
+        temps: [],
+        icons: [],
+      });
+    }
+    const entry = days.get(key);
+    entry.temps.push(item.main.temp);
+    entry.icons.push(item.weather[0].icon);
+  });
+
+  return [...days.values()].slice(0, 5).map(d => ({
+    day:  d.day,
+    min:  Math.min(...d.temps),
+    max:  Math.max(...d.temps),
+    icon: d.icons[Math.floor(d.icons.length / 2)] || d.icons[0],
+  }));
+}
+
+/* ═══════════════════════════════════════════
+   UNIT CONVERSION
+   Always store in Celsius; convert on display.
+═══════════════════════════════════════════ */
+function cvt(celsius) {
+  return Math.round(isCelsius ? celsius : celsius * 9 / 5 + 32);
+}
+
+/* ═══════════════════════════════════════════
+   UNIT TOGGLE
+═══════════════════════════════════════════ */
+function setupUnitToggle() {
+  $('unitToggle').addEventListener('click', () => {
+    isCelsius = !isCelsius;
+    $('unitToggle').textContent    = isCelsius ? '°F' : '°C';
+    $('unitToggle').ariaLabel      = isCelsius ? 'Switch to Fahrenheit' : 'Switch to Celsius';
+    if (rawWeather) displayWeather();
+  });
+}
+
+/* ═══════════════════════════════════════════
+   SEARCH
+═══════════════════════════════════════════ */
+function setupSearch() {
+  $('searchForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const city = $('cityInput').value.trim();
+    if (!city) return;
+    fetchWeather({ q: city });
+    $('cityInput').blur();
+  });
+}
+
+/* ═══════════════════════════════════════════
+   UI STATE
+═══════════════════════════════════════════ */
+function showLoading(msg) {
+  $('loadingText').textContent = msg;
+  $('loadingState').hidden = false;
+  $('errorState')  .hidden = true;
+  $('weatherMain') .hidden = true;
+}
+
+function showMain() {
+  $('loadingState').hidden = true;
+  $('errorState')  .hidden = true;
+  $('weatherMain') .hidden = false;
+}
+
+function showError(msg) {
+  $('errorMsg').textContent = msg;
+  $('loadingState').hidden = true;
+  $('errorState')  .hidden = false;
+  $('weatherMain') .hidden = true;
+}
+
+/* ═══════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+
+/** UTC date key for grouping forecast days */
+function utcKey(d) {
+  return `${d.getUTCFullYear()}-${d.getUTCMonth()}-${d.getUTCDate()}`;
+}
+
+/**
+ * Format a Unix timestamp to a local time string
+ * using the city's UTC offset (in seconds).
+ */
+function localTime(unixSec, offsetSec) {
+  const d = new Date((unixSec + offsetSec) * 1000);
+  let   h = d.getUTCHours();
+  const m = d.getUTCMinutes().toString().padStart(2, '0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${h}:${m} ${ampm}`;
+}
+
+/** Format a Unix timestamp to a readable date using the city's offset */
+function localDate(unixSec, offsetSec) {
+  const d = new Date((unixSec + offsetSec) * 1000);
+  return d.toLocaleDateString('en-US', {
+    weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC',
+  });
 }

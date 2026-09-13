@@ -1,63 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <!-- font awesome code for the location -->
-    <script
-      src="https://kit.fontawesome.com/9daf415874.js"
-      crossorigin="anonymous"
-    ></script>
-    <!-- weather icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"
-      integrity="sha512-r/Gan7PMSRovDus++vDS2Ayutc/cSdl268u047n4z+k7GYuR7Hiw71FsT3QQxdKJBVHYttOJ6IGLnlM9IoMToQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <!-- css -->
-    <link rel="stylesheet" href="./assets/css/style.css" />
-    <title>weather app</title>
-  </head>
-  <body>
-    <section class="weather-container">
-      <div class="weather-content-wrap">
-        <div class="weather-icon">
-          <i class="wi"></i>
-        </div>
-        <div class="description-wrap">
-          <div class="description-wrap-1">
-            <div class="city">
-              <i class="fas fa-location-dot"></i>
-              <span class="city-name"></span>
-              <span class="country"></span>
-            </div>
-            <div class="description-of-weather"></div>
-          </div>
-          <div class="description-wrap-2">
-            <div class="temperature">
-              <span class="temp-data"></span>
-              &deg;
-              <span class="temp-unit">C</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="spinner-grow" role="status">
-        <span class="visually-hidden"></span>
-      </div>
-    </section>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather — Betrends</title>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="./assets/js/index.js"></script>
-  </body>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.12/css/weather-icons.min.css"
+    integrity="sha512-r/Gan7PMSRovDus++vDS2Ayutc/cSdl268u047n4z+k7GYuR7Hiw71FsT3QQxdKJBVHYttOJ6IGLnlM9IoMToQ=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  >
+
+  <link rel="stylesheet" href="./assets/css/style.css">
+</head>
+<body class="cloudy">
+
+  <div class="app">
+
+    <!-- ── Header ── -->
+    <header class="app-header">
+      <form class="search-form" id="searchForm" autocomplete="off">
+        <div class="search-wrap">
+          <svg class="search-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <circle cx="6" cy="6" r="5"/>
+            <path d="M10 10L13.5 13.5"/>
+          </svg>
+          <input
+            type="text"
+            id="cityInput"
+            class="search-input"
+            placeholder="Search for a city…"
+            aria-label="Search city"
+          >
+          <button type="submit" class="search-submit" aria-label="Search">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M2 6.5h9M8 3l3 3.5-3 3.5"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+      <button class="unit-toggle" id="unitToggle" aria-label="Switch to Fahrenheit">°F</button>
+    </header>
+
+    <!-- ── Loading ── -->
+    <div class="loading-state" id="loadingState">
+      <div class="spinner"></div>
+      <p class="loading-text" id="loadingText">Getting your location…</p>
+    </div>
+
+    <!-- ── Error ── -->
+    <div class="error-state" id="errorState" hidden>
+      <div class="error-icon" aria-hidden="true">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 8v4M12 16.5h.01"/>
+        </svg>
+      </div>
+      <p class="error-msg" id="errorMsg">City not found.</p>
+      <button class="error-retry" id="retryBtn">Use my location instead</button>
+    </div>
+
+    <!-- ── Main ── -->
+    <main class="weather-main" id="weatherMain" hidden>
+
+      <!-- Current weather card -->
+      <div class="current-card glass">
+        <div class="card-top">
+          <div class="location-block">
+            <h1 class="city-name" id="cityName">—</h1>
+            <p class="country-name" id="countryName">—</p>
+            <p class="local-date" id="localDate">—</p>
+          </div>
+          <div class="main-icon-wrap">
+            <i class="wi" id="mainIcon" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <div class="temp-display">
+          <span class="temp-big" id="tempBig">—</span>
+          <div class="temp-meta">
+            <span class="temp-unit-sym" id="tempUnit">°C</span>
+            <span class="feels-like" id="feelsLike">—</span>
+          </div>
+        </div>
+
+        <p class="weather-desc" id="weatherDesc">—</p>
+      </div>
+
+      <!-- Detail strip -->
+      <div class="details-strip glass">
+        <div class="detail-item">
+          <i class="wi wi-humidity detail-icon" aria-hidden="true"></i>
+          <span class="detail-val" id="humidity">—</span>
+          <span class="detail-label">Humidity</span>
+        </div>
+        <div class="detail-sep" aria-hidden="true"></div>
+        <div class="detail-item">
+          <i class="wi wi-strong-wind detail-icon" aria-hidden="true"></i>
+          <span class="detail-val" id="windSpeed">—</span>
+          <span class="detail-label">Wind</span>
+        </div>
+        <div class="detail-sep" aria-hidden="true"></div>
+        <div class="detail-item">
+          <i class="wi wi-sunrise detail-icon" aria-hidden="true"></i>
+          <span class="detail-val" id="sunrise">—</span>
+          <span class="detail-label">Sunrise</span>
+        </div>
+        <div class="detail-sep" aria-hidden="true"></div>
+        <div class="detail-item">
+          <i class="wi wi-sunset detail-icon" aria-hidden="true"></i>
+          <span class="detail-val" id="sunset">—</span>
+          <span class="detail-label">Sunset</span>
+        </div>
+      </div>
+
+      <!-- 5-day forecast -->
+      <div class="forecast-card glass">
+        <p class="forecast-label">5-Day Forecast</p>
+        <div class="forecast-scroll">
+          <div class="forecast-grid" id="forecastGrid" aria-label="5-day forecast">
+            <!-- populated by JS -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="./assets/js/index.js"></script>
+</body>
 </html>
